@@ -1,9 +1,24 @@
 # frozen_string_literal: true
 
-ARGF.reduce(0) do |score, card|
-  _, winning_numbers, card_numbers = card.chomp.split(/: *|\| */)
+
+all_cards = ARGF.each_with_object([]) do |card, all_cards|
+  card_id, winning_numbers, card_numbers = card.chomp.split(/: *|\| */)
+  card_id = card_id.split(/ +/).last.to_i
   winning_numbers = Set.new(winning_numbers.split(/ +/))
   card_winning_numbers = card_numbers.split(/ +/).count { winning_numbers.include?(_1) }
 
-  score + (1 << card_winning_numbers).div(2)
-end.display
+  all_cards[card_id] = card_winning_numbers
+end
+
+copies = all_cards.map { _1.nil? ? 0 : 1 }
+
+(0...(all_cards.length)).each do |i|
+  next if copies[i].zero?
+
+  all_cards[i].times do |j|
+    next if copies[i + j + 1].nil?
+    copies[i + j + 1] += copies[i]
+  end
+end
+
+puts copies.sum
