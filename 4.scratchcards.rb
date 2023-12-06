@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 all_cards = ARGF.each_with_object([]) do |card, all_cards|
   card_id, winning_numbers, card_numbers = card.chomp.split(/: *|\| */)
   card_id = card_id.split(/ +/).last.to_i

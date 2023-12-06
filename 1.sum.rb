@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-SPELLED_DIGITS = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7,
-                   eight: 8, nine: 9 }.freeze
-VALID_DIGIT = /\d|#{SPELLED_DIGITS.keys.join('|')}/.freeze
-FIRST_DIGIT = /.*?(#{VALID_DIGIT}).*/.freeze
-LAST_DIGIT = /.*(#{VALID_DIGIT}).*/.freeze
+SPELLED_DIGITS = {one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7,
+                  eight: 8, nine: 9}.freeze
+VALID_DIGIT = /\d|#{SPELLED_DIGITS.keys.join("|")}/
+FIRST_DIGIT = /.*?(#{VALID_DIGIT}).*/
+LAST_DIGIT = /.*(#{VALID_DIGIT}).*/
 
 def digit_from_string(str)
-  return str.to_i if str in '0'..'9'
+  return str.to_i if str in "0".."9"
 
   SPELLED_DIGITS[str.to_sym]
 end

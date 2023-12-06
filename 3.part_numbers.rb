@@ -14,7 +14,7 @@ def with_adjacent(enumerable)
 end
 
 def symbol?(str, idx)
-  !str.nil? && !str[idx].nil? && str[idx] != '.' && str[idx].match?(/\D/)
+  !str.nil? && !str[idx].nil? && str[idx] != "." && str[idx].match?(/\D/)
 end
 
 def count_numbers(str, index)
@@ -47,12 +47,12 @@ def find_number(str, index)
 end
 
 with_adjacent(ARGF).flat_map do |prev_line, curr_line, next_line|
-  next [] if curr_line.index('*').nil?
+  next [] if curr_line.index("*").nil?
 
   star_indices = []
   star_index = 0
   while star_index
-    star_index = curr_line.index('*', star_index + 1)
+    star_index = curr_line.index("*", star_index + 1)
     break if star_index.nil?
 
     numbers_around = [prev_line, curr_line, next_line].reduce(0) do |sum, line|
@@ -65,7 +65,7 @@ with_adjacent(ARGF).flat_map do |prev_line, curr_line, next_line|
 
   star_indices.map do |star|
     part_numbers = [prev_line, curr_line, next_line].compact.flat_map { find_numbers(_1, star) }
-    puts part_numbers.join('*')
+    puts part_numbers.join("*")
     part_numbers.inject(:*)
   end
 end.sum.display
