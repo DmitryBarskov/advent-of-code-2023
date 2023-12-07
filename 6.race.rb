@@ -6,13 +6,12 @@
 #   "Distance:  9  40  200"
 # ]
 def race_records(lines)
-  lines
-    .map {
-    _1.split(/\s+/) => /Time:|Distance:/, *records
-    records
-  }
-    .transpose
-    .map { {time: _1.to_i, distance: _2.to_i} }
+  lines.map { _1.split(/\s+/) } => [
+    [/Time:/, *time_records],
+    [/Distance:/, *distance_records]
+  ]
+
+  { time: time_records.join.to_i, distance: distance_records.join.to_i }
 end
 
 def ways_to_win(time:, distance:)
@@ -24,6 +23,6 @@ def ways_to_win(time:, distance:)
   last_record - first_record
 end
 
-race_records(ARGF.readlines).map do |record|
+race_records(ARGF.readlines).then do |record|
   ways_to_win(**record)
-end.reduce(:*).display
+end.display
