@@ -11,7 +11,7 @@ def race_records(lines)
     [/Distance:/, *distance_records]
   ]
 
-  { time: time_records.join.to_i, distance: distance_records.join.to_i }
+  {time: time_records.join.to_i, distance: distance_records.join.to_i}
 end
 
 def ways_to_win(time:, distance:)
