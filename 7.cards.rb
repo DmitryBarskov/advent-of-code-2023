@@ -1,5 +1,5 @@
 class Hand
-  CARDS = %w[A K Q J T 9 8 7 6 5 4 3 2].freeze
+  CARDS = %w[A K Q T 9 8 7 6 5 4 3 2 J].freeze
 
   # @param {String} cards is five chars of
   # A, K, Q, J, T, 9, 8, 7, 6, 5, 4, 3, or 2
@@ -8,7 +8,7 @@ class Hand
   end
 
   def <=>(other)
-    (self.combination_rank <=> other.combination_rank).nonzero? ||
+    (combination_rank <=> other.combination_rank).nonzero? ||
       (card_ranks <=> other.card_ranks)
   end
 
@@ -38,7 +38,7 @@ class Hand
   # One pair, where two cards share one label, and the other three cards have a different label from the pair and each other: A23A4
   # High card, where all cards' labels are distinct: 23456
   def combination
-    cards_count = count_symbols.values
+    cards_count = count_cards.values
     return :five_of_a_kind if cards_count.include?(5)
     return :four_of_a_kind if cards_count.include?(4)
     return :full_house if cards_count.include?(3) && cards_count.include?(2)
@@ -53,28 +53,28 @@ class Hand
     @card_ranks ||= @cards.each_char.map { card_to_i(_1) }
   end
 
-  def count_symbols
-    @count_symbols ||= @cards.each_char.each_with_object(Hash.new(0)) { |card, c| c[card] += 1 }
+  def count_cards
+    counts = @cards.each_char.each_with_object(Hash.new(0)) { |card, c| c[card] += 1 }
+    return counts unless counts.key?("J")
+    return counts if counts.keys == ["J"]
+
+    top_card, = counts.max_by { |card, count| card == 'J' ? 0 : count }
+    counts[top_card] += counts.delete("J")
+    counts
   end
 
   def card_to_i(card)
-    15 - CARDS.index(card)
+    20 - CARDS.index(card)
   end
 end
 
-input = "32T3K 765
-T55J5 684
-KK677 28
-KTJJT 220
-QQQJA 483"
-
-ARGF.map do |line|
-  line.chomp.split => cards, bid
-  [Hand.new(cards), bid.to_i]
-end
-  .sort { |a, b| a[0] <=> b[0] }
-  .map { |_, bid| bid }
+ARGF
+  .map do |line|
+    line.chomp.split => cards, bid
+    [Hand.new(cards), bid.to_i]
+  end
+  .sort_by { |a| a[0] }
   .zip(1..)
-  .map { |bid, rank| bid * rank }
+  .map { |hand_and_bid, rank| hand_and_bid[1] * rank }
   .sum
   .display
