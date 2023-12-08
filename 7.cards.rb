@@ -58,7 +58,7 @@ class Hand
     return counts unless counts.key?("J")
     return counts if counts.keys == ["J"]
 
-    top_card, = counts.max_by { |card, count| card == 'J' ? 0 : count }
+    top_card, = counts.max_by { |card, count| (card == "J") ? 0 : count }
     counts[top_card] += counts.delete("J")
     counts
   end
