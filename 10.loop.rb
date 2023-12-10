@@ -149,13 +149,9 @@ end
 
 maze = ARGF.readlines
 graph = parse_graph(maze)
-p graph
-largest_cycle = begin
-                  eval(File.read('day-10-cycle.txt'))
-                rescue Errno::ENOENT
-                  find_largest_cycle(graph)
-                end
-p largest_cycle
+largest_cycle = find_largest_cycle(graph)
+puts largest_cycle.length
+
 replace_start_in_maze!(maze, graph)
-puts maze.join
-count_points_inside_cycle(largest_cycle, maze).display
+
+puts count_points_inside_cycle(largest_cycle, maze)
