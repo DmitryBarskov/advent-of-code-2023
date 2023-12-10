@@ -38,7 +38,7 @@ def parse_graph(input_lines)
           [i + 1, j],
           [i - 1, j],
           [i, j + 1],
-          [i, j - 1],
+          [i, j - 1]
         ]
         graph[:start] = [i, j]
       when "."
@@ -56,22 +56,22 @@ def replace_start_in_maze!(maze, graph)
   start = graph[:start]
   start => [start_y, start_x]
   if [graph[[start_y - 1, start_x]], graph[[start_y + 1, start_x]]].all? { _1&.include?(start) }
-    maze[start_y][start_x] = '|'
+    maze[start_y][start_x] = "|"
     graph[start] = [graph[[start_y - 1, start_x]], graph[[start_y + 1, start_x]]]
   elsif [graph[[start_y, start_x - 1]], graph[[start_y, start_x + 1]]].all? { _1&.include?(start) }
-    maze[start_y][start_x] = '-'
+    maze[start_y][start_x] = "-"
     graph[start] = [graph[[start_y, start_x - 1]], graph[[start_y, start_x + 1]]]
   elsif [graph[[start_y, start_x - 1]], graph[[start_y - 1, start_x]]].all? { _1&.include?(start) }
-    maze[start_y][start_x] = 'J'
+    maze[start_y][start_x] = "J"
     graph[start] = [graph[[start_y, start_x - 1]], graph[[start_y - 1, start_x]]]
   elsif [graph[[start_y, start_x + 1]], graph[[start_y + 1, start_x]]].all? { _1&.include?(start) }
-    maze[start_y][start_x] = 'F'
+    maze[start_y][start_x] = "F"
     graph[start] = [graph[[start_y, start_x + 1]], graph[[start_y + 1, start_x]]]
-  elsif [graph[[start_y, start_x + 1]], graph[[start_y - 1, start_x]]].all?{_1&.include?(start) }
-    maze[start_y][start_x] = 'L'
+  elsif [graph[[start_y, start_x + 1]], graph[[start_y - 1, start_x]]].all? { _1&.include?(start) }
+    maze[start_y][start_x] = "L"
     graph[start] = [graph[[start_y, start_x + 1]], graph[[start_y + 1, start_x]]]
-  elsif [graph[[start_y, start_x - 1]], graph[[start_y + 1, start_x]]].all?{_1&.include?(start) }
-    maze[start_y][start_x] = '7'
+  elsif [graph[[start_y, start_x - 1]], graph[[start_y + 1, start_x]]].all? { _1&.include?(start) }
+    maze[start_y][start_x] = "7"
     graph[start] = [graph[[start_y, start_x - 1]], graph[[start_y + 1, start_x]]]
   end
 end
@@ -98,9 +98,6 @@ def find_cycles(graph)
   cycles
 end
 
-STATE_CHANGE_PIPES = %w[L J 7 F |].freeze
-CORNER_PIPES = %w[L J 7 F].freeze
-
 def opposite_corners?(corner1, corner2)
   return false if corner1.nil? || corner2.nil?
 
@@ -111,31 +108,28 @@ def opposite_corners?(corner1, corner2)
   end
 end
 
+PIPES = %w[L J 7 F |].freeze
+
 def count_points_inside_cycle(cycle, maze)
-  borders = cycle.group_by { |y, x| y }.transform_values { |points| points.map { |y, x| x }.sort }
+  borders = cycle.group_by { |y, x| y }.transform_values { |points| points.map { |y, x| x } }
   points_inside = 0
 
   borders.each do |y, x_borders|
     inside = false
     previous_border = nil
     (0...maze[y].chomp.size).each do |x|
-      if x_borders.include?(x) && STATE_CHANGE_PIPES.include?(maze[y][x])
-        print("Changing from inside=#{inside} ")
+      if x_borders.include?(x) && PIPES.include?(maze[y][x])
         inside = !inside
         if opposite_corners?(previous_border, maze[y][x])
           inside = !inside
         end
-        print("to inside=#{inside}. opposite_corners?(maze[#{y}][#{x}]=#{maze[y][x]}, #{previous_border})=#{ opposite_corners?(maze[y][x], previous_border)}\n")
         previous_border = maze[y][x]
       elsif x_borders.include?(x)
-        # travelling across horizontal pipe
+        # travelling along horizontal pipe
       elsif inside
-        p("Count maze[#{y}][#{x}]=#{maze[y][x]} as inside cell")
         points_inside += 1
       end
     end
-    p(y:, x_borders:, points_inside:)
-    # state => :outside
   end
 
   points_inside
