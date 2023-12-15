@@ -14,7 +14,7 @@ def initialize_boxes(sequences)
   sequences.reduce(Hash.new({})) do |boxes, sequence|
     sequence.match(/(\w+)([-=])(\d+)?/) => label, operation, focal_length
     box = hash_from_string(label)
-    if operation == '='
+    if operation == "="
       boxes.merge(box => boxes[box].merge(label => focal_length.to_i))
     else
       boxes.merge(box => boxes[box].except(label))
@@ -23,13 +23,12 @@ def initialize_boxes(sequences)
 end
 
 def focusing_power(boxes)
-  boxes.map do |box_number, lenses|
+  boxes.flat_map do |box_number, lenses|
     lenses.values.each_with_index.map do |focal_length, slot|
       focal_length * (slot + 1)
-    end.sum * (box_number + 1)
+    end * (box_number + 1)
   end.sum
 end
 
-input = 'rn=1,cm-,qp=3,cm=2,qp-,pc=4,ot=9,ab=5,pc-,pc=6,ot=7'
 input = ARGF.readlines
-puts parse_input(input).then { p initialize_boxes(_1) }.then { focusing_power(_1) }
+puts parse_input(input).then { initialize_boxes(_1) }.then { focusing_power(_1) }

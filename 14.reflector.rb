@@ -8,14 +8,14 @@ end
 
 def north_load(dish)
   dish.zip((dish.size..).step(-1)).map do |line, n_load|
-    line.count('O') * n_load
+    line.count("O") * n_load
   end.sum
 end
 
 def tilt_north!(dish)
   dish.size.times do |i|
     dish[i].size.times do |j|
-      move_rock!(dish, i, j, direction: [-1, 0]) if dish[i][j] == 'O'
+      move_rock!(dish, i, j, direction: [-1, 0]) if dish[i][j] == "O"
     end
   end
 end
@@ -23,7 +23,7 @@ end
 def tilt_west!(dish)
   dish.size.times do |i|
     dish[i].size.times do |j|
-      move_rock!(dish, i, j, direction: [0, -1]) if dish[i][j] == 'O'
+      move_rock!(dish, i, j, direction: [0, -1]) if dish[i][j] == "O"
     end
   end
 end
@@ -31,7 +31,7 @@ end
 def tilt_south!(dish)
   dish.size.times.reverse_each do |i|
     dish[i].size.times do |j|
-      move_rock!(dish, i, j, direction: [1, 0]) if dish[i][j] == 'O'
+      move_rock!(dish, i, j, direction: [1, 0]) if dish[i][j] == "O"
     end
   end
 end
@@ -39,7 +39,7 @@ end
 def tilt_east!(dish)
   dish.size.times do |i|
     dish[i].size.times.reverse_each do |j|
-      move_rock!(dish, i, j, direction: [0, 1]) if dish[i][j] == 'O'
+      move_rock!(dish, i, j, direction: [0, 1]) if dish[i][j] == "O"
     end
   end
 end
@@ -58,19 +58,14 @@ def move_rock!(lines, row, col, direction:)
 
     break if i_next < 0 || j_next < 0
     break if i_next >= lines.size || j_next >= lines[i_next].size
-    break if lines[i_next][j_next] != '.'
+    break if lines[i_next][j_next] != "."
 
     i, j = i_next, j_next
   end
 
-  begin
-    new_location = lines[i][j]
-    lines[i][j] = lines[row][col]
-    lines[row][col] = new_location
-  rescue
-    require 'byebug'
-    byebug
-  end
+  new_location = lines[i][j]
+  lines[i][j] = lines[row][col]
+  lines[row][col] = new_location
 end
 
 input = ARGF.readlines
