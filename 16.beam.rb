@@ -5,7 +5,7 @@ def parse_input(input)
 end
 
 def add_first_beam(layout, at_y: 0, at_x: 0, direction: RIGHT)
-  layout.map { _1.each_char.map { |char| [char, Array.new] } }.tap do
+  layout.map { _1.each_char.map { |char| [char, []] } }.tap do
     _1[at_y][at_x].last.push(direction)
   end
 end
@@ -23,7 +23,7 @@ def add_first_beams(layout)
     end,
     *layout.each_with_index.map do |row, i|
       [add_first_beam(layout, at_y: i, at_x: row.size - 1, direction: LEFT), i, row.size - 1]
-    end,
+    end
   ]
 end
 
@@ -31,23 +31,6 @@ UP = [-1, 0].freeze
 DOWN = [1, 0].freeze
 LEFT = [0, -1].freeze
 RIGHT = [0, 1].freeze
-
-def show_beams(directions)
-  dir_to_char = {UP=>'^', DOWN=>'v', RIGHT=>'>', LEFT=>'<'}
-  directions.map { dir_to_char[_1] }.last
-end
-
-def show_layout(layout)
-  layout.map do |row|
-    row.map { |char, beams| beams.any? ? "#{show_beams(beams)}" : char }.join
-  end.join("\n")
-end
-
-def show_energized(layout)
-  layout.map do |row|
-    row.map { |_char, beams| beams.empty? ? "." : "#" }.join
-  end.join("\n")
-end
 
 def count_energized(layout)
   layout.map do |row|
@@ -113,16 +96,6 @@ def simulate_beam!(layout, start_y, start_x)
   layout
 end
 
-input = '.|...\....
-|.-.\.....
-.....|-...
-........|.
-..........
-.........\
-..../.\\\\..
-.-.-/..|..
-.|....-|.\
-..//.|....'
 input = ARGF.readlines
 
 parse_input(input)
